@@ -6,7 +6,8 @@ const dotEnv = require("dotEnv");
 const morgan = require("morgan");
 
 const connectDB = require("./config/db");
-const indexRoutes = require("./routes");
+const blogRoutes = require("./routes/blog");
+const dashboardRoutes = require("./routes/dashboard");
 
 //* Load Config
 dotEnv.config({ path: "./config/config.env" });
@@ -24,14 +25,15 @@ if (process.env.NODE_ENV === "development") {
 //* View Engine
 app.use(expressLayout);
 app.set("view engine", "ejs");
-// app.set("layout", "./layouts/mainLayout");
+app.set("layout", "./layouts/mainLayout");
 app.set("views", "views");
 
 //* Static Folders
 app.use(express.static(path.join(__dirname, "public")));
 
 //* Routes
-app.use(indexRoutes);
+app.use('/dashboard',dashboardRoutes);
+app.use(blogRoutes);
 
 const PORT = process.env.PORT || 3000;
 
