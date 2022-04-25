@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+const { schema } = require("./validation/userValidation");
+
+const userSchema = new mongoose.Schema({
   fullname: {
     type: String,
     required: true,
@@ -24,6 +26,10 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model("User", UserSchema);
+userSchema.statics.userValidation = function (body) {
+  return schema.validate(body, { abortEarly: false }); //* abortEarly: return all errors with validating
+};
+
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
