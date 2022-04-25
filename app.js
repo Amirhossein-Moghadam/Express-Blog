@@ -9,7 +9,6 @@ const connectDB = require("./config/db");
 const blogRoutes = require("./routes/blog");
 const usersRoutes = require("./routes/users");
 const dashboardRoutes = require("./routes/dashboard");
-const errorsController = require("./controllers/errors");
 
 //* Load Config
 dotEnv.config({ path: "./config/config.env" });
@@ -41,8 +40,13 @@ app.use("/", blogRoutes);
 app.use("/users", usersRoutes);
 app.use("/dashboard", dashboardRoutes);
 
-//* 404 not found
-app.use(errorsController.get404);
+//* 404 pagee
+app.use((req, res) => {
+  res.render("404", {
+    pageTitle: "صفحه مورد نظر یافت نشد | 404",
+    path: "/404",
+  });
+});
 
 const PORT = process.env.PORT || 3000;
 
