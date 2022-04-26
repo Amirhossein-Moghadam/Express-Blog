@@ -3,7 +3,11 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
 exports.login = (req, res) => {
-  res.render("login", { pageTitle: "ورود به بخش مدیریت", path: "/login" });
+  res.render("login", {
+    pageTitle: "ورود به بخش مدیریت",
+    path: "/login",
+    message: req.flash("success_message"),
+  });
 };
 
 exports.register = (req, res) => {
@@ -35,6 +39,7 @@ exports.createUser = async (req, res) => {
     //? First Way:
     const hash = await bcrypt.hash(password, 10);
     await User.create({ fullname, email, password: hash });
+    req.flash("success_message", "ثبت نام شما موفقیت آمیز بود");
     res.redirect("/users/login");
     //? second Way:
     // bcrypt.genSalt(10, (err, salt) => {
