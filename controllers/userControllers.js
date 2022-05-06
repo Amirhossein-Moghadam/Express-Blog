@@ -6,7 +6,7 @@ exports.login = (req, res) => {
   res.render("login", {
     pageTitle: "ورود به بخش مدیریت",
     path: "/login",
-    message: req.flash("success_message"),
+    message: req.flash("success_message"), //? key
   });
 };
 
@@ -39,7 +39,7 @@ exports.createUser = async (req, res) => {
     //? First Way:
     const hash = await bcrypt.hash(password, 10);
     await User.create({ fullname, email, password: hash });
-    req.flash("success_message", "ثبت نام شما موفقیت آمیز بود");
+    req.flash("success_message", "ثبت نام شما موفقیت آمیز بود"); //? key,value
     res.redirect("/users/login");
     //? second Way:
     // bcrypt.genSalt(10, (err, salt) => {
