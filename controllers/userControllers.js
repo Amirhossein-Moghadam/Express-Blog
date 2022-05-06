@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
 
 const User = require("../models/User");
 
@@ -7,7 +8,31 @@ exports.login = (req, res) => {
     pageTitle: "ورود به بخش مدیریت",
     path: "/login",
     message: req.flash("success_message"), //? key
+    error: req.flash("error"), //? passport
   });
+};
+
+exports.handleLogin = (req, res, next) => {
+  passport.authenticate("local", {
+    // successRedirect: "/dashboard",
+    failureRedirect: "/users/login",
+    failureFlash: true,
+  })(req, res, next);
+};
+
+exports.rememberMe = (req, res) => {
+  if (req.body.remember) {
+    req.session.cookie.originalMaxAge = 24 * 60 * 60 * 1000; //24 Hours
+  } else {
+    req.session.cookie.expire = null; //
+  }
+  res.redirect("/dashboard");
+};
+
+exports.logOut = (req, res) => {
+  req.logout();
+  req.flash("success_message", "خروج موفقیت آمیز بود.");
+  res.redirect("/users/login");
 };
 
 exports.register = (req, res) => {

@@ -1,11 +1,14 @@
 const path = require("path");
 
 const express = require("express");
+const mongoose = require("mongoose");
 const expressLayout = require("express-ejs-layouts");
+const passport = require("passport");
 const dotEnv = require("dotEnv");
 const morgan = require("morgan");
 const flash = require("connect-flash");
 const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
 
 const connectDB = require("./config/db");
 const blogRoutes = require("./routes/blog");
@@ -17,6 +20,9 @@ dotEnv.config({ path: "./config/config.env" });
 
 //* Database Connection
 connectDB();
+
+//* Passport Configuration
+require("./config/passport");
 
 //* App
 const app = express();
@@ -39,11 +45,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(
   session({
     secret: "secret",
-    cookie: { maxAge: 60000 },
     resave: false,
     saveUninitialized: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
   })
 );
+
+//* Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 //* Flash
 app.use(flash()); //req.flash
